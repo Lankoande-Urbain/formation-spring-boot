@@ -1,5 +1,6 @@
 package com.example.form1.entity;
 
+import com.example.form1.dto.EStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Table(name = "yt_task")
@@ -28,6 +30,6 @@ public class YtTask {
     @Column(name = "description", length = 200)
     private String description;
 
-    //@Column(name = "status")
-    //private EStatus status;
+    @Column(name = "status")
+    private EStatus status;
 }

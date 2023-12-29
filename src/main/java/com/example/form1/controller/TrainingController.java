@@ -85,6 +85,11 @@ public class TrainingController {
        return list;
     }
 
+    /**
+     * enregistrement des données dans la base de données
+     * @param catDto
+     * @return  entité construit a partir du DTO
+     */
     @PostMapping("/categories")
     public ResponseEntity<YtCategoryDto> postCategory(
             @RequestBody @Valid YtCategoryDto catDto) {
@@ -106,25 +111,37 @@ public class TrainingController {
     /**
      *
      * @param idCategorie
-     * @param categorie
-     * @return
+     * @param catDto
+     * @return  entité construit a partir du DTO
      */
     @PutMapping("/categories/{id}")
     public ResponseEntity<YtCategoryDto> putCategory( @PathVariable("id") Long idCategorie,
-            @RequestBody @Valid YtCategoryDto categorie) {
+            @RequestBody @Valid YtCategoryDto catDto) {
         log.info("Update Categorie : {}", idCategorie);
+        final YtCategory catById = this.categoryRepository.getReferenceById(idCategorie);
 
-        //Procedure de la nodification
+        //Procedure de la modification
+        catById.setNom(catDto.getName());
+
         //Retourner l'objet avec un identifiant
-        return new ResponseEntity<>(categorie, HttpStatus.OK);
+        this.categoryRepository.save(catById);
+
+        return new ResponseEntity<>(catDto, HttpStatus.OK);
     }
 
+    /**
+     *  Suppression de donnees
+     * @param idCategorie
+     * @return  entité construit a partir du DTO
+     */
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> putCategory(
             @PathVariable("id") Long idCategorie) {
         log.warn("Delete a Categorie : {}", idCategorie);
 
         //Procedure de suppresion
+        this.categoryRepository.deleteById(idCategorie);
+
         return new ResponseEntity<>( HttpStatus.OK);
     }
 }
