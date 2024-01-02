@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +51,7 @@ public class TrainingController {
      * @param type
      * @param num1
      * @param num2
-     * @return une operation etre num1 et num2 en fonction du choix
+     * @return une operation être num1 et num2 en fonction du choix
      */
     @GetMapping("/operation/{type}")
     public String operation(
@@ -76,49 +78,70 @@ public class TrainingController {
     }
 
     /**
+     * requête qui renvoie les catégorie & requête de recherche de catégorie par le nom
      *
+     * @param nom
      * @return
      */
     @GetMapping("/categories")
-    public List<YtCategory> fetchCategories() {
-       final  List<YtCategory> list = this.categoryRepository.findAll();
-       return list;
+    public List<YtCategory> fetchcatégories(
+            @RequestParam(name = "nom", required = false) String nom
+    ) {
+        if (!StringUtils.hasText(nom)) { // si le paramètre de recherche est vide renvoyer tout les catégories ordonner par ordre décroissant
+            final List<YtCategory> list = this.categoryRepository.findAllByOrderByNomDesc();
+            return list;
+        } else { // Recherche selon la paramètre rentrer
+            List<YtCategory> list = this.categoryRepository.findByNomContainingIgnoreCaseOrderByNomDesc(nom);
+            return list;
+        }
+
     }
 
     /**
      * enregistrement des données dans la base de données
+     *
      * @param catDto
-     * @return  entité construit a partir du DTO
+     * @return entité construit a partir du DTO
      */
-    @PostMapping("/categories")
+    @PostMapping("/catégories")
     public ResponseEntity<YtCategoryDto> postCategory(
-            @RequestBody @Valid YtCategoryDto catDto) {
-        log.info("Saving a Categorie : {}", catDto.getName().toUpperCase());
+            @RequestBody @Valid YtCategoryDto catDto)  throws Exception {
+        log.info("Saving a catégorie : {}", catDto.getName().toUpperCase());
         Long nouveauId = new Random().nextLong();
         catDto.setId(nouveauId);
-        // Proceder a l'enregistrement dans la base de basse en construidant l'entite a partir du DTO
+        // Procéder a l' enregistrement dans la base de basse en construisant l' entité a partir du DTO
 
         final YtCategory entity = new YtCategory();
         entity.setId(catDto.getId());
         entity.setNom(catDto.getName());
 
+        //Check des doublons avant enregistrement
+        boolean exists = this.categoryRepository.existsByNomIgnoreCase(catDto.getName());
+        if (exists) {
+            //Empêcher l' enregistrement de la catégorie existence
+
+            throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "La catégorie existe deja !");
+
+        }
+        //sauvegarde de la catégorie dans la base de donnees
         this.categoryRepository.save(entity);
 
-        // Retouner l'objet avec un identifiant
+        // Retourner l' objet avec un identifiant
         return new ResponseEntity<>(catDto, HttpStatus.CREATED);
+
+
     }
 
     /**
-     *
-     * @param idCategorie
+     * @param idcategorie
      * @param catDto
-     * @return  entité construit a partir du DTO
+     * @return entité construit a partir du DTO
      */
-    @PutMapping("/categories/{id}")
-    public ResponseEntity<YtCategoryDto> putCategory( @PathVariable("id") Long idCategorie,
-            @RequestBody @Valid YtCategoryDto catDto) {
-        log.info("Update Categorie : {}", idCategorie);
-        final YtCategory catById = this.categoryRepository.getReferenceById(idCategorie);
+    @PutMapping("/catégories/{id}")
+    public ResponseEntity<YtCategoryDto> putCategory(@PathVariable("id") Long idcategorie,
+                                                     @RequestBody @Valid YtCategoryDto catDto) {
+        log.info("Update catégorie : {}", idcategorie);
+        final YtCategory catById = this.categoryRepository.getReferenceById(idcategorie);
 
         //Procedure de la modification
         catById.setNom(catDto.getName());
@@ -130,18 +153,19 @@ public class TrainingController {
     }
 
     /**
-     *  Suppression de donnees
-     * @param idCategorie
-     * @return  entité construit a partir du DTO
+     * Suppression de donnees
+     *
+     * @param idcategorie
+     * @return entité construit a partir du DTO
      */
-    @DeleteMapping("/categories/{id}")
+    @DeleteMapping("/catégories/{id}")
     public ResponseEntity<Void> putCategory(
-            @PathVariable("id") Long idCategorie) {
-        log.warn("Delete a Categorie : {}", idCategorie);
+            @PathVariable("id") Long idcategorie) {
+        log.warn("Delete a catégorie : {}", idcategorie);
 
-        //Procedure de suppresion
-        this.categoryRepository.deleteById(idCategorie);
+        //Procedure de suppression
+        this.categoryRepository.deleteById(idcategorie);
 
-        return new ResponseEntity<>( HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

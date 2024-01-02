@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Getter // generateur de getter
-@Setter // generateur de setter
-@NoArgsConstructor // generateur de constructeur sans argument
-@AllArgsConstructor // generateur de constructeur avec tout les  arguments
+@Getter // générateur de getter
+@Setter // générateur de setter
+@NoArgsConstructor // générateur de constructeur sans argument
+@AllArgsConstructor // générateur de constructeur avec tout les  arguments
 
 public class YtTaskDto {
     private Long id;
