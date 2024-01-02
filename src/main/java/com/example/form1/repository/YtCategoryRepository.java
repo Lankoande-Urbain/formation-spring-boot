@@ -15,21 +15,21 @@ public interface YtCategoryRepository extends JpaRepository<YtCategory, Long> {
     /**
      *  Recherche par le nom avec la case et sans la complesion
      * @param nom
-     * @return Liste de categorie
+     * @return Liste de catégorie
      */
     List<YtCategory> findByNom(String nom);
 
     /**
-     * Recherche par le nom sans tenir compte de la case et sans la complesion
+     * Recherche par le nom sans tenir compte de la case et sans la completion
      * @param nom
-     * @return Liste de categorie
+     * @return Liste de catégorie
      */
     List<YtCategory> findByNomIgnoreCase(String nom); //recherche sans la case
 
     /**
-     * Recherche par le nom sans tenir compte de la case et avec la complesion
+     * Recherche par le nom sans tenir compte de la case et avec la completion
      * @param nom
-     * @return Liste de categorie
+     * @return Liste de catégorie
      */
     List<YtCategory> findByNomContainingIgnoreCase(String nom); //recherche sans la case
 

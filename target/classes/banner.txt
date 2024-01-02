@@ -1,0 +1,14 @@
+
+${AnsiColor.BLUE}$$$$$$$\            $$\ ${AnsiColor.CYAN}                                 ${AnsiColor.BRIGHT_CYAN} $$$$$$\   $$$$$$\  $$\      $$\
+${AnsiColor.BLUE}$$  __$$\           \__|${AnsiColor.CYAN}                                 ${AnsiColor.BRIGHT_CYAN}$$  __$$\ $$  __$$\ $$$\    $$$ |
+${AnsiColor.BLUE}$$ |  $$ | $$$$$$\  $$\ ${AnsiColor.CYAN}$$$$$$$\   $$$$$$$\  $$$$$$\     ${AnsiColor.BRIGHT_CYAN}$$ /  \__|$$ /  $$ |$$$$\  $$$$ |
+${AnsiColor.BLUE}$$$$$$$  |$$  __$$\ $$ |${AnsiColor.CYAN}$$  __$$\ $$  _____|$$  __$$\    ${AnsiColor.BRIGHT_CYAN}$$ |      $$ |  $$ |$$\$$\$$ $$ |
+${AnsiColor.BLUE}$$  ____/ $$ |  \__|$$ |${AnsiColor.CYAN}$$ |  $$ |$$ /      $$$$$$$$ |   ${AnsiColor.BRIGHT_CYAN}$$ |      $$ |  $$ |$$ \$$$  $$ |
+${AnsiColor.BLUE}$$ |      $$ |      $$ |${AnsiColor.CYAN}$$ |  $$ |$$ |      $$   ____|   ${AnsiColor.BRIGHT_CYAN}$$ |  $$\ $$ |  $$ |$$ |\$  /$$ |
+${AnsiColor.BLUE}$$ |      $$ |      $$ |${AnsiColor.CYAN}$$ |  $$ |\$$$$$$$\ \$$$$$$$\ $$\${AnsiColor.BRIGHT_CYAN}\$$$$$$  | $$$$$$  |$$ | \_/ $$ |
+${AnsiColor.BLUE}\__|      \__|      \__|${AnsiColor.CYAN}\__|  \__| \_______| \_______|\__${AnsiColor.BRIGHT_CYAN}|\______/  \______/ \__|     \__|
+
+
+
+LANKOANDDE Y. Urbain
+lankoandeurbain8@gmail.com
