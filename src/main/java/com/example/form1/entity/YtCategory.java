@@ -22,5 +22,5 @@ public class YtCategory {
     private long id;
 
     @Column(name = "nom", length = 100)
-    private String nom;
+    private String name;
 }

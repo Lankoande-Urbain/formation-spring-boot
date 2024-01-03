@@ -16,5 +16,5 @@ public class YtTaskDto {
     private String title;
     private String description;
     private EStatus status;
-
+    private Long idCategory;
 }

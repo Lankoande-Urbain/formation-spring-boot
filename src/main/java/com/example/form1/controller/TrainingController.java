@@ -2,9 +2,15 @@ package com.example.form1.controller;
 
 import com.example.form1.dto.ETypeOperation;
 import com.example.form1.dto.YtCategoryDto;
+import com.example.form1.dto.YtTaskDto;
 import com.example.form1.entity.YtCategory;
+import com.example.form1.entity.YtTask;
 import com.example.form1.repository.YtCategoryRepository;
+import com.example.form1.repository.YtTaskRepository;
+import com.example.form1.service.TrainingService;
+import com.example.form1.utils.YtConstants;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,19 +25,23 @@ import java.util.List;
 import java.util.Random;
 
 @Slf4j
-
+@RequiredArgsConstructor
 @RestController
 public class TrainingController {
 
-    @Autowired
-    private YtCategoryRepository categoryRepository;
+
+    private final YtCategoryRepository categoryRepository;
+    private final YtTaskRepository taskRepository;
+    private final TrainingService trainingService;
+
 
     /**
      * @return message de bienvenue
      */
     @GetMapping("/") //ecoute GET sur le /
     public String home() {
-        return "Bienvenue sur mon Application !!";
+        return "\nBienvenue sur le REST de PRINCE.COM";
+
     }
 
     /**
@@ -83,18 +93,13 @@ public class TrainingController {
      * @param nom
      * @return
      */
-    @GetMapping("/categories")
-    public List<YtCategory> fetchcatégories(
-            @RequestParam(name = "nom", required = false) String nom
-    ) {
-        if (!StringUtils.hasText(nom)) { // si le paramètre de recherche est vide renvoyer tout les catégories ordonner par ordre décroissant
-            final List<YtCategory> list = this.categoryRepository.findAllByOrderByNomDesc();
-            return list;
-        } else { // Recherche selon la paramètre rentrer
-            List<YtCategory> list = this.categoryRepository.findByNomContainingIgnoreCaseOrderByNomDesc(nom);
-            return list;
-        }
 
+    // Code des catégories
+    @GetMapping(YtConstants.URLS.CATEGORY)
+    public List<YtCategoryDto> fetchCategory(
+            @RequestParam(name = "nom", required = false) String nom) {
+        final List<YtCategoryDto> respServ = trainingService.fetchCategory(nom);
+        return respServ;
     }
 
     /**
@@ -103,53 +108,31 @@ public class TrainingController {
      * @param catDto
      * @return entité construit a partir du DTO
      */
-    @PostMapping("/catégories")
+    @PostMapping(YtConstants.URLS.CATEGORY)
     public ResponseEntity<YtCategoryDto> postCategory(
-            @RequestBody @Valid YtCategoryDto catDto)  throws Exception {
+            @RequestBody @Valid YtCategoryDto catDto) throws Exception {
+        final YtCategoryDto respServ = this.trainingService.postCategory(catDto);
+
         log.info("Saving a catégorie : {}", catDto.getName().toUpperCase());
-        Long nouveauId = new Random().nextLong();
-        catDto.setId(nouveauId);
-        // Procéder a l' enregistrement dans la base de basse en construisant l' entité a partir du DTO
-
-        final YtCategory entity = new YtCategory();
-        entity.setId(catDto.getId());
-        entity.setNom(catDto.getName());
-
-        //Check des doublons avant enregistrement
-        boolean exists = this.categoryRepository.existsByNomIgnoreCase(catDto.getName());
-        if (exists) {
-            //Empêcher l' enregistrement de la catégorie existence
-
-            throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "La catégorie existe deja !");
-
-        }
-        //sauvegarde de la catégorie dans la base de donnees
-        this.categoryRepository.save(entity);
-
-        // Retourner l' objet avec un identifiant
-        return new ResponseEntity<>(catDto, HttpStatus.CREATED);
-
-
+        //Retouner l'objet avec un code sattus
+        return new ResponseEntity<>(respServ, HttpStatus.CREATED);
     }
+
 
     /**
      * @param idcategorie
      * @param catDto
      * @return entité construit a partir du DTO
      */
-    @PutMapping("/catégories/{id}")
-    public ResponseEntity<YtCategoryDto> putCategory(@PathVariable("id") Long idcategorie,
-                                                     @RequestBody @Valid YtCategoryDto catDto) {
+    @PutMapping(YtConstants.URLS.CATEGORY + "/{id}")
+    public ResponseEntity<YtCategoryDto> updateCategory(@PathVariable("id") Long idcategorie,
+                                                        @RequestBody @Valid YtCategoryDto catDto) {
+
+
         log.info("Update catégorie : {}", idcategorie);
-        final YtCategory catById = this.categoryRepository.getReferenceById(idcategorie);
+        final YtCategoryDto respServ = this.trainingService.updateCategory(idcategorie, catDto);
 
-        //Procedure de la modification
-        catById.setNom(catDto.getName());
-
-        //Retourner l'objet avec un identifiant
-        this.categoryRepository.save(catById);
-
-        return new ResponseEntity<>(catDto, HttpStatus.OK);
+        return new ResponseEntity<>(respServ, HttpStatus.OK);
     }
 
     /**
@@ -158,14 +141,33 @@ public class TrainingController {
      * @param idcategorie
      * @return entité construit a partir du DTO
      */
-    @DeleteMapping("/catégories/{id}")
-    public ResponseEntity<Void> putCategory(
+    @DeleteMapping(YtConstants.URLS.CATEGORY + "/{id}")
+    public ResponseEntity<Void> deleteCategory(
             @PathVariable("id") Long idcategorie) {
-        log.warn("Delete a catégorie : {}", idcategorie);
 
-        //Procedure de suppression
-        this.categoryRepository.deleteById(idcategorie);
+        log.warn("Delete a catégorie : {}", idcategorie);
+        trainingService.deleteCategory(idcategorie);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    //tasck
+
+
+    @GetMapping(YtConstants.URLS.TASK)
+    public List<YtTaskDto> fetchTask() {
+        final List<YtTaskDto> respServ = trainingService.fetchTasks();
+        return respServ;
+    }
+
+    @PostMapping(YtConstants.URLS.TASK)
+    public ResponseEntity<YtTaskDto> postTask(
+            @RequestBody @Valid YtTaskDto taskDto)  {
+        final YtTaskDto respServ = this.trainingService.postTask(taskDto);
+
+        log.info("Saving a catégorie : {}", taskDto.getTitle().toUpperCase());
+        //Retouner l'objet avec un code sattus
+        return new ResponseEntity<>(respServ, HttpStatus.CREATED);
     }
 }

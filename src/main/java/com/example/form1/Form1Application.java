@@ -3,7 +3,7 @@ package com.example.form1;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.example.form1"})
 public class Form1Application {
 
     public static void main(String[] args) {
